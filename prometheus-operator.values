@@ -431,7 +431,9 @@ grafana:
     #   - grafana.example.com
 
   sidecar:
-    image: 4k1l/k8s-sidecar-arm:v0.1.20
+    image: 
+      repository: 4k1l/k8s-sidecar-arm
+      tag: v0.1.20
     dashboards:
       enabled: true
       label: grafana_dashboard
