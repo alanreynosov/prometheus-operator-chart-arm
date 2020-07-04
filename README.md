@@ -1,3 +1,11 @@
+this is a cloned repo from https://github.com/uocxp/prometheus-operator-chart-arm.git which fix
+
+<code>
+	Error: template: prometheus-operator/charts/grafana/templates/deployment.yaml:43:10: executing "prometheus-operator/charts/grafana/templates/deployment.yaml" at <include "grafana.pod" .>: error calling include: template: prometheus-operator/charts/grafana/templates/_pod.tpl:62:22: executing "grafana.pod" at <.Values.sidecar.image.repository>: can't evaluate field repository in type interface {}
+</code>
+
+all credit for uocxp
+
 # Deploy Prometheus-Operator Helm chart on RaspberryPi ARM Kubernetes
 since multiple Docker images in  [prometheus-operator helm chart](https://github.com/helm/charts/tree/master/stable/prometheus-operator) and it's subcharts(kube-state-metrics,grafana) are not arm compatible, I cross-compiled these Docker images to support armv7. The table below includes the ARM uncompatible Docker images and the cross-compiled ones.
 
