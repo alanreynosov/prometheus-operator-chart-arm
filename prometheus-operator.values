@@ -202,7 +202,7 @@ alertmanager:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: ClusterIP
+    type: NodePort
 
   ## If true, create a serviceMonitor for alertmanager
   ##
@@ -396,6 +396,35 @@ grafana:
   defaultDashboardsEnabled: true
 
   adminPassword: prom-operator
+  
+  service:
+    annotations: {}
+    labels: {}
+    clusterIP: ""
+    port: 3000
+
+    ## To be used with a proxy extraContainer port
+    targetPort: 3000
+
+    ## List of IP addresses at which the Prometheus server service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    ## Port to expose on each node
+    ## Only used if service.type is 'NodePort'
+    ##
+    nodePort: 30000
+
+    ## Loadbalancer IP
+    ## Only use if service.type is "loadbalancer"
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    ## Service type
+    ##
+    type: NodePort
+
+    sessionAffinity: ""  
 
   ingress:
     ## If true, Grafana Ingress will be created
@@ -404,9 +433,10 @@ grafana:
 
     ## Annotations for Grafana Ingress
     ##
-    annotations: {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    annotations: 
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/rewrite-target: /$1
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 
     ## Labels to be added to the Ingress
     ##
@@ -417,10 +447,14 @@ grafana:
     ##
     # hosts:
     #   - grafana.domain.com
-    hosts: []
+    hosts: 
+      - my.host.com
 
     ## Path for grafana ingress
-    path: /
+    path: /grafana/?(.*)
+    grafana.ini:
+    server:
+      root_url: https://my.host.com/grafana/
 
     ## TLS configuration for grafana Ingress
     ## Secret must be manually created in the namespace
@@ -437,10 +471,10 @@ grafana:
     dashboards:
       enabled: true
       label: grafana_dashboard
-    datasources:
+    datasources:  
       enabled: true
       defaultDatasourceEnabled: true
-
+  
       ## Annotations for Grafana datasource configmaps
       ##
       annotations: {}
@@ -1062,7 +1096,7 @@ prometheusOperator:
   ## Service type
   ## NodePort, ClusterIP, loadbalancer
   ##
-    type: ClusterIP
+    type: NodePort
 
     ## List of IP addresses at which the Prometheus server service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -1250,7 +1284,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: ClusterIP
+    type: NodePort
 
     sessionAffinity: ""
 
@@ -1277,7 +1311,7 @@ prometheus:
     loadBalancerSourceRanges: []
     ## Service type
     ##
-    type: ClusterIP
+    type: NodePort
 
   ## Configure pod disruption budgets for Prometheus
   ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget
